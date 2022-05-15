@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Set caps lock to be another ctrl key.
+
+setxkbmap -option ctrl:nocaps

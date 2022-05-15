@@ -7,8 +7,8 @@ set -e
 SCRIPT=${0##*/}
 
 if [ $(id -u) != 0 ]; then
-    echo "$SCRIPT: must be run by the root user. Exiting." >&2
-    exit 1
+  echo "$SCRIPT: must be run by the root user. Exiting." >&2
+  exit 1
 fi
 
 slackpkg update

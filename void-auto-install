@@ -20,7 +20,6 @@ echo 1     # Partition number
 echo       # First sector (Accept Default)
 echo +512M # Last sector (512M)
 echo t     # Change partition type
-echo 1     # Change type of partiion 1
 echo 1     # Change type to EFI
 echo n     # Add a new partition
 echo 2     # Partition number

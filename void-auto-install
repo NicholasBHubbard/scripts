@@ -32,7 +32,7 @@ EFI_PART=/dev/sda1
 BTRFS_PART=/dev/sda2
 
 mkfs.vfat -F32 $EFI_PART
-mkfs.btrfs $BTRFS_PART
+mkfs.btrfs -f $BTRFS_PART
 
 BTRFS_OPTS='rw,noatime,compress=zstd,space_cache=v2,commit=120'
 

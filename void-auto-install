@@ -83,7 +83,7 @@ grub-install $BTRFS_PART
 
 # Finish up the chroot
 xbps-reconfigure -fa
-exit
+
 END_CHROOT_SCRIPT
 
 echo all good

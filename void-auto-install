@@ -62,7 +62,7 @@ mkdir /mnt/efi
 mount -o rw,noatime $EFI_PART /mnt/efi
 
 # Install the system
-REPO=https://alpha.us.repo.voidlinux.org/current
+REPO=https://repo-us.voidlinux.org/current
 ARCH=x86_64
 XBPS_ARCH=$ARCH xbps-install -S -R "$REPO" -r /mnt base-system btrfs-progs
 

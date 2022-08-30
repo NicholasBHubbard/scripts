@@ -1,0 +1,10 @@
+#!/usr/bin/env perl
+
+# Print the names of all subroutines defined in a given set of files.
+
+use strict;
+use warnings;
+
+while (<>) {
+    print $1, "\n" if /^\s*sub\s+(\w+)/;
+}

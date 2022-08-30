@@ -64,7 +64,7 @@ mount -o rw,noatime $EFI_PART /mnt/efi
 # Install the system
 REPO=https://repo-us.voidlinux.org/current
 ARCH=x86_64
-XBPS_ARCH=$ARCH xbps-install -S -R "$REPO" -r /mnt base-system btrfs-progs
+XBPS_ARCH=$ARCH xbps-install -y -S -R "$REPO" -r /mnt base-system btrfs-progs
 
 # Chroot
 for dir in dev proc sys run; do

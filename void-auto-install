@@ -52,7 +52,7 @@ btrfs subvolume create /mnt/srv
 # Install the system
 REPO=https://repo-us.voidlinux.org/current
 ARCH=x86_64
-XBPS_ARCH=$ARCH xbps-install -y -S -R "$REPO" -r /mnt base-system grub btrfs-progs
+XBPS_ARCH=$ARCH xbps-install -y -S -R "$REPO" -r /mnt base-system btrfs-progs
 
 # Chroot
 for dir in dev proc sys run; do
@@ -75,10 +75,10 @@ UUID=$BTRFS_UUID /.snapshots btrfs $BTRFS_OPTS,subvol=@snapshots 0 2
 tmpfs /tmp tmpfs defaults,nosuid,nodev 0 0
 EOF
 
-xbps-install -Su void-repo-nonfree
+xbps-install -Su void-repo-nonfree intel-ucode grub
 
-# Setup grub
-grub-mkconfig -o /boot/grub/grub.cfg
+echo hostonly=yes >> /etc/dracut.conf
+
 grub-install $BTRFS_PART
 
 # Finish up the chroot

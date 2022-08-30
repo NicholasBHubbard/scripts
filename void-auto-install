@@ -2,6 +2,8 @@
 
 # TODO
 
+set -e
+
 SCRIPT=${0##*/}
 
 if [[ $(id -u) != 0 ]]; then

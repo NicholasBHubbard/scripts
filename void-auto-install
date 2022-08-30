@@ -23,7 +23,7 @@ echo       # Last sector (Accept Default - rest of disk)
 echo w     # Write
 ) | fdisk /dev/sda
 
-BTRFS_PART=/dev/sda2
+BTRFS_PART=/dev/sda
 
 mkfs.btrfs -f $BTRFS_PART
 

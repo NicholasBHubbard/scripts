@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+# TODO
+
+SCRIPT=${0##*/}
+
+if [[ $(id -u) != 0 ]]; then
+  echo "$SCRIPT: must be run by the root user. Exiting." >&2
+  exit 1
+fi
+
+(
+echo g     # Create a new empty GPT partition table
+echo n     # Add a new partition
+echo p     # Primary partition
+echo 1     # Partition number
+echo       # First sector (Accept Default)
+echo +512M # Last sector (512M)
+echo t     # Change partition type
+echo 1     # Change type of partiion 1
+echo 1     # Change type to EFI
+echo n     # Add a new partition
+echo p     # Primary partition
+echo 2     # Partition number
+echo       # First sector (Accept Default)
+echo       # Last sector (Accept Default - rest of disk)
+echo w     # Write
+) | fdisk /dev/sda
+
+EFI_PART=/dev/sda1
+BTRFS_PART=/dev/sda2
+
+mkfs.vfat -F32 $EFI_PART
+mkfs.btrfs $BTRFS_PART
+
+BTRFS_OPTS='rw,noatime,compress=zstd,space_cache=v2,commit=120'
+
+# Create btrfs subvolumes
+mount -o $BTRFS_OPTS $BTRFS_PART /mnt
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+umount /mnt
+
+# Mount btrfs subvolumes
+mount -o "$BTRFS_OPTS,subvol=@" $BTRFS_PART /mnt
+mkdir /mnt/home
+mount -o "$BTRFS_OPTS,subvol=@home" $BTRFS_PART /mnt/home
+mkdir /mnt/.snapshots
+mount -o "$BTRFS_OPTS,subvol=@snapshots" $BTRFS_PART /mnt/.snapshots
+
+# Create nested partitions that will be excluded from snapshots
+mkdir -p /mnt/var/cache
+btrfs subvolume create /mnt/var/cache/xbps
+btrfs subvolume create /mnt/var/tmp
+btrfs subvolume create /mnt/srv
+
+# Mount EFI partition
+mkdir /mnt/efi
+mount -o rw,noatime $EFI_PART /mnt/efi
+
+# Install the system
+REPO=https://alpha.us.repo.voidlinux.org/current
+ARCH=x86_64
+XBPS_ARCH=$ARCH xbps-install -S -R "$REPO" -r /mnt base-system btrfs-progs
+
+# Chroot
+for dir in dev proc sys run; do
+    mount --rbind /$dir /mnt/$dir; mount --make-rslave /mnt/$dir
+done
+
+EFI_UUID=$(blkid -s UUID -o value $EFI_PART)
+BTRFS_UUID=$(blkid -s UUID -o value $BTRFS_PART)
+
+chroot /mnt /bin/bash <<END_CHROOT_SCRIPT
+xbps-reconfigure -f glibc-locales
+
+# Make root users password 'root'
+usermod --password root root
+
+# Create the /etc/fstab
+cat <<'EOF' > /etc/fstab
+UUID=$BTRFS_UUID / btrfs $BTRFS_OPTS,subvol=@ 0 1
+UUID=$EFI_UUID /efi vfat defaults,noatime 0 2
+UUID=$BTRFS_UUID /home btrfs $BTRFS_OPTS,subvol=@home 0 2
+UUID=$BTRFS_UUID /.snapshots btrfs $BTRFS_OPTS,subvol=@snapshots 0 2
+tmpfs /tmp tmpfs defaults,nosuid,nodev 0 0
+EOF
+
+# Setup dracus
+echo hostonly=yes >> /etc/dracut.conf
+
+# Setup grub
+xbps-install -Su void-repo-nonfree intel-ucode grub-x86_64-efi
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="Void Linux"
+
+# Finish up the chroot
+xbps-reconfigure -fa
+exit
+END_CHROOT_SCRIPT
+
+echo all good
+
+exit 0

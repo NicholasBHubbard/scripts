@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Update slackware system with slackpkg.
+
+SCRIPT=${0##*/}
+
+if [[ $(id -u) != 0 ]]; then
+  echo "$SCRIPT: must be run by the root user. Exiting." >&2
+  exit 1
+fi
+
+slackpkg update
+slackpkg install-new
+slackpkg upgrade-all
+slackpkg clean-system

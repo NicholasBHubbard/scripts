@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use v5.16.3;
+
+use autodie;
+
+use File::Basename;
+
+my $SCRIPT = basename(__FILE__);
+
+if (@ARGV) {
+    die "$SCRIPT: error: does not take arguments\n";
+}
+
+sub main {
+
+    my $is_stack_project = sub {
+        my $dir = shift;
+        opendir(my $dh, $dir);
+        my @dir_contents = readdir($dh);
+        closedir($dh);
+        return 1 if grep /^\.stack-work$/, @dir_contents;
+        return 0;
+    };
+
+    my $stack_proj;
+
+    my $proj_dir = '/home/nick/p';
+
+    my @projects = glob("$proj_dir/*");
+
+    my @stack_projects;
+
+    for my $proj (@projects) {
+        if ($is_stack_project->($proj)) {
+            push @stack_projects, $proj;
+        }
+    }
+
+    unless (@stack_projects) {
+        die "$SCRIPT: error: could not find any stack projects in '$proj_dir'\n";
+    }
+
+    @stack_projects = sort(@stack_projects);
+
+    print "found stack projects:\n";
+  PICK_PROJECT:
+    for (my $i = 1; $i <= scalar(@stack_projects); $i++) {
+        print "    $i  ->  $stack_projects[$i-1]\n";
+    }
+    print 'pick project: ';
+
+    my $input = <>;
+    my $input_minus_1 = $input - 1;
+
+    if (my $proj = $stack_projects[$input_minus_1]) {
+        $stack_proj = $proj;
+    }
+    else {
+        warn "$input is not a valid option, try again\n";
+        goto PICK_PROJECT;
+    }
+
+    chdir $stack_proj;
+
+    exit system(q(ghcid -c 'stack exec -- ghci -isrc -iapp app/Main.hs'));
+}
+
+main();

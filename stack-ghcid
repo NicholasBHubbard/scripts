@@ -46,13 +46,20 @@ sub main {
     @stack_projects = sort(@stack_projects);
 
     print "found stack projects:\n";
+
   PICK_PROJECT:
     for (my $i = 1; $i <= scalar(@stack_projects); $i++) {
         print "    $i  ->  $stack_projects[$i-1]\n";
     }
     print 'pick project: ';
 
-    my $input = <>;
+    chomp(my $input = <>);
+
+    unless ($input =~ /^\d+$/) {
+        warn "$input is not a valid option, try again\n";
+        goto PICK_PROJECT;
+    }
+
     my $input_minus_1 = $input - 1;
 
     if (my $proj = $stack_projects[$input_minus_1]) {

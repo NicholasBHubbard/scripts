@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Wrapper script for toggling yakuake dropdown terminal in KDE.
+#
 # Requires qdbus.
 
 LOCKFILE=/tmp/yakuake.sh.lock
@@ -13,7 +14,7 @@ QDBUS=/usr/lib64/qt5/bin/qdbus
 if [ -n "$(pgrep '^yakuake$')" ]; then
   $QDBUS org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
 else
-  yakuake --im "$(which fcitx)" --inputstyle onthespot >/dev/null 2>&1 & 
+  yakuake --im "$(which fcitx)" --inputstyle onthespot >/dev/null 2>&1 &
   TERMINAL_ID_0=$($QDBUS org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId 0)
   $QDBUS org.kde.yakuake /yakuake/tabs setTabTitle 0 "Main"
   $QDBUS org.kde.yakuake /yakuake/sessions org.kde.yakuake.splitTerminalLeftRight "$TERMINAL_ID_0"

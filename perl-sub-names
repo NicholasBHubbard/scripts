@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# Print the names of all subroutines defined in a given set of files.
+# Print the names of all subroutines defined in a given set of Perl files.
 
 use strict;
 use warnings;

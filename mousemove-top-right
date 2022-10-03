@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# Until I figure out how to reliably find the current screen width, just abuse
-# that xdotool handles an unreasonably large input by deafulting to the max
-# width. The shortest path between two points is a straight line.
+# Moves the mouse to the top right corner of the screen on X11
+
 xdotool mousemove 1000000 0

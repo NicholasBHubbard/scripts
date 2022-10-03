@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Bind mount proc filesystems before chrooting.
+
+set -e
+
+SCRIPT=${0##*/}
+
+usage="Usage: $SCRIPT newroot program"
+
+if [ $(id -u) != 0 ]; then
+  echo "$SCRIPT: must be run by the root user. Exiting." >&2
+  exit 1
+fi
+
+mount_dir=$1
+program=$2
+
+( [ -d "$mount_dir" ] && [ -x "$program" ] ) || ( echo "$usage" 1>&2 && exit 1 )
+
+

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Set caps lock to be another ctrl key.
 

@@ -9,6 +9,8 @@ if [[ $(id -u) != 0 ]]; then
   exit 1
 fi
 
+cd /
+
 slackpkg update
 slackpkg install-new
 slackpkg upgrade-all

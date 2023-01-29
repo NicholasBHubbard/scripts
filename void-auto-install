@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# TODO
+# This script doesn't work yet.
 
 set -e
 

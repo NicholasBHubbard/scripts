@@ -27,23 +27,20 @@ sub main {
 
     my $stack_proj;
 
-    my $proj_dir = '/home/nick/p';
+    my $proj_dir = "$ENV{HOME}/p";
 
     my @projects = glob("$proj_dir/*");
 
     my @stack_projects;
-
     for my $proj (@projects) {
-        if ($is_stack_project->($proj)) {
-            push @stack_projects, $proj;
-        }
+        push @stack_projects, $proj if $is_stack_project->($proj);
     }
 
     unless (@stack_projects) {
         die "$SCRIPT: error: could not find any stack projects in '$proj_dir'\n";
     }
 
-    @stack_projects = sort(@stack_projects);
+    @stack_projects = sort @stack_projects;
 
     print "found stack projects:\n";
 
@@ -60,9 +57,7 @@ sub main {
         goto PICK_PROJECT;
     }
 
-    my $input_minus_1 = $input - 1;
-
-    if (my $proj = $stack_projects[$input_minus_1]) {
+    if (my $proj = $stack_projects[$input - 1]) {
         $stack_proj = $proj;
     }
     else {

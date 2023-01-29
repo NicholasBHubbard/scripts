@@ -2,9 +2,5 @@
 
 # Print the names of all subroutines defined in a given set of Perl files.
 
-use strict;
-use warnings;
-
-while (<>) {
-    print $1, "\n" if /^\s*sub\s+(\w+)/;
-}
+while (<>) { push @sub_names, $1 if /^\s*sub\s+(\w+)/ }
+print "$_\n" for sort @sub_names;

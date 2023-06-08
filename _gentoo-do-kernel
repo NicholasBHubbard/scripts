@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16.3;
+use autodie;
+
+die "permission denied\n" unless $> == 0;
+
+sub system_or_die {
+    my $cmd = shift;
+    my $exit_status = system $cmd;
+    unless (0 == $exit_status) {
+        die "system command '$cmd' exited with non-zero status $exit_status\n";
+    }
+}
+
+# kernel name is the format that dracut expects
+my $latest_kernel = do {
+    opendir my $dh, '/lib/modules';
+    my @kernels = sort grep !/^\.\.?$/, readdir $dh;
+    pop @kernels;
+};
+
+# make sure this is a symlink to the latest version
+chdir '/usr/src/linux';
+
+system_or_die('make -j6');
+system_or_die('make modules_install');
+system_or_die('make install');
+system_or_die("dracut --kver=$latest_kernel --hostonly --force");
+system_or_die('grub-mkconfig -o /boot/grub/grub.cfg');
+
+say 'all good';

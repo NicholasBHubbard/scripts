@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16;
+use autodie;
+
+if ($ARGV[0] =~ /^(?:-h|--help)$/) {
+    say "_translate-mame-z80-trace MAME-TRACE MEGAMU-TRACE MEGAMU_ADDR_RX";
+    exit 0;
+}
+
+my ($mame_file, $megamu_file, $megamu_addr_rx) = @ARGV;
+open my $mame_fh, '<', $mame_file;
+open my $megamu_fh, '<', $megamu_file;
+my %op_map;
+while (<$mame_fh>) {
+    chomp;
+    if (/^([0-9a-f]+): (.+)/i) {
+        my $addr  = uc $1;
+        my $instr = $2;
+        $op_map{$addr} = $instr;
+    }
+}
+while (<$megamu_fh>) {
+    chomp;
+    if (/$megamu_addr_rx/) {
+        my $addr = uc $1;
+        if (my $instr = $op_map{$addr}) {
+            say "$addr: $instr";
+        }
+        else {
+            say "$addr: MEGAMU ONLY";
+        }
+    }
+}

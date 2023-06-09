@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16.3;
+use autodie;
+
+my $arg = $ARGV[0];
+
+unless ($arg && $arg =~ /^(?:debug|normal)$/) {
+    die "expected arg 'debug' or 'normal'\n";
+}
+
+my $compile_cmd =
+  $arg eq 'debug'
+    ? 'make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE OPTIMIZE=0 SYMBOLS=1 SYMLEVEL=3'
+    : 'make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE';
+
+my $mame_dir = '/home/_73/p/emus/mame';
+
+chdir $mame_dir;
+
+if (0 == system($compile_cmd)) {
+    rename './mame', './mame-debug' if $arg eq 'debug';
+}
+
+exit $?;

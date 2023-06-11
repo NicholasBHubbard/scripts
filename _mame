@@ -7,5 +7,12 @@ use autodie;
 
 # mame leaves files around in the working dir, how annoying ...
 
+my $exe;
+if ($ARGV[0] eq 'debug') {
+    shift @ARGV;
+    $exe = './mame-debug';
+} else {
+    $exe = './mame';
+}
 chdir "$ENV{HOME}/p/emus/mame";
-exit(system($ARGV[0] eq 'debug' ? './mame-debug' : './mame'))
+exit system($exe, @ARGV);

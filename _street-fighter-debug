@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16;
+use autodie;
+
+### helpers
+
+sub mame_instr_addr {
+    my $instr = shift;
+    $instr =~ /^([a-f0-9]+): /i;
+    return uc($1) if $1;
+}
+
+sub megamu_instr_addr {
+    my $instr = shift;
+    if (!defined $instr) {
+        return 0
+    }
+    $instr =~ /^\(pc \$([a-f0-9]+)\) /i;
+    return uc($1) if $1;
+}
+
+### data
+
+my $mame_trace = "$ENV{HOME}/p/MegaMu/trace/super-street-fighter-2-mame.trace";
+my $megamu_trace = "$ENV{HOME}/p/MegaMu/trace/super-street-fighter-2-megamu.trace";
+
+open my $mame_fh, '<', $mame_trace;
+open my $megamu_fh, '<', $megamu_trace;
+
+my @mame_instrs;
+my @megamu_instrs;
+while (<$mame_fh>) { chomp; push @mame_instrs, $_ if mame_instr_addr($_) }
+while (<$megamu_fh>) { chomp; push @megamu_instrs, $_ if megamu_instr_addr($_) }
+
+close $mame_fh;
+close $megamu_fh;
+
+my %mame_instrs;
+my %megamu_instrs;
+for (@mame_instrs) { my $addr = mame_instr_addr($_); $mame_instrs{$addr} = $_ }
+for (@megamu_instrs) { my $addr = megamu_instr_addr($_); $megamu_instrs{$addr} = $_ }
+
+### operations
+
+##### FIRST MEGAMU INSTR NOT IN MAME
+# for my $megamu_instr (@megamu_instrs) {
+#     my $addr = megamu_instr_addr($megamu_instr);
+#     unless ($mame_instrs{$addr}) {
+#         say $megamu_instr;
+#         exit 0;
+#     }
+# }
+##### returns: (pc $003c18) move.l  #$c0000000, $c00004.l
+
+##### FIRST MEGAMU INSTR THAT ISNT "(pc $003c3a) bra $3c3a". WE ARE IN AN INFINITE
+# my $count = 0;
+# for my $megamu_instr (@megamu_instrs) {
+#     my $addr = megamu_instr_addr($megamu_instr);
+#     if ($addr eq '003C3A') {
+#         my $start_idx = $count - 1000;
+#         for my $i ($start_idx..$start_idx+1000) {
+#             say $megamu_instrs[$i];
+#         }
+#         exit 0;
+#     }
+#     $count++;
+# }
+##### returns: (pc $003c32) move.w  #$8140, $c00004.l
+
+for (my $i = 0; $i < @megamu_instrs; $i++) {
+    my $instr = $megamu_instrs[$i];
+    my $addr = hex(megamu_instr_addr($instr));
+    if ($addr and $addr == hex('3c10')) {
+        for (my $j = $i-2; $j >= 0; $j--) {
+            my $instr = $megamu_instrs[$j];
+            my $addr = hex(megamu_instr_addr($instr));
+            if ($addr != hex('3c06') && $addr != hex('3c08') && $addr != hex('3c0a')) {
+                say $instr;
+                say $j;
+                exit 0;
+            }
+        }
+    }
+}

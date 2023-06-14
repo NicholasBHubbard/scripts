@@ -4,4 +4,4 @@ use strict;
 use warnings;
 use v5.16;
 
-exit(system, "$ENV{HOME}/p/MegaMu/build/megamu", @ARGV);
+exit(system "$ENV{HOME}/p/MegaMu/MegaMu/build/megamu", @ARGV);

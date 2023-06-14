@@ -5,6 +5,7 @@ use warnings;
 use v5.16;
 
 my $usage = 'usage: _megamu [optimize|debug] MEGAMU_ARGS';
-die "$usage\n" unless $ARGV[0] and $ARGV[0] =~ /^(optimize|debug)$/;
-my $exe = $ARGV[0] eq 'debug' ? 'megamu-debug' : 'megamu-optimize';
+my $arg = shift @ARGV;
+die "$usage\n" unless $arg and $arg =~ /^(optimize|debug)$/;
+my $exe = $arg eq 'debug' ? 'megamu-debug' : 'megamu-optimize';
 exit(system "$ENV{HOME}/p/MegaMu/MegaMu/build/$exe", @ARGV);

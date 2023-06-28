@@ -16,7 +16,7 @@ open my $megamu_fh, '<', $megamu_file;
 my %op_map;
 while (<$mame_fh>) {
     chomp;
-    if (/^([0-9a-f]+): (.+)/i) {
+    if (/^([0-9a-f]+): ([^\n\r]+)/i) {
         my $addr  = uc $1;
         my $instr = $2;
         $op_map{$addr} = $instr;

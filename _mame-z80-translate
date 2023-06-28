@@ -5,9 +5,16 @@ use warnings;
 use v5.16;
 use autodie;
 
+my $usage = '_mame-z80-translate MAME-TRACE MEGAMU-TRACE MEGAMU_ADDR_RX';
+
 if ($ARGV[0] =~ /^(?:-h|--help)$/) {
-    say "_translate-mame-z80-trace MAME-TRACE MEGAMU-TRACE MEGAMU_ADDR_RX";
+    print "$usage\n";
     exit 0;
+}
+
+if (@ARGV != 3) {
+	warn "$usage\n";
+    exit 1;
 }
 
 my ($mame_file, $megamu_file, $megamu_addr_rx) = @ARGV;

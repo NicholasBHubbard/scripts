@@ -13,7 +13,7 @@ if ($ARGV[0] =~ /^(?:-h|--help)$/) {
 }
 
 if (@ARGV != 3) {
-	warn "$usage\n";
+    warn "$usage\n";
     exit 1;
 }
 

@@ -18,8 +18,10 @@ if (@ARGV != 3) {
 }
 
 my ($mame_file, $megamu_file, $megamu_addr_rx) = @ARGV;
+
 open my $mame_fh, '<', $mame_file;
 open my $megamu_fh, '<', $megamu_file;
+
 my %op_map;
 while (<$mame_fh>) {
     chomp;
@@ -29,6 +31,7 @@ while (<$mame_fh>) {
         $op_map{$addr} = $instr;
     }
 }
+
 while (<$megamu_fh>) {
     chomp;
     if (/$megamu_addr_rx/) {

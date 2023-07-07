@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16;
+use autodie;
+use List::MoreUtils qw(uniq);
+
+my $usage = 'usage: _mame-backward-deviation MAME-TRACE MEGAMU-TRACE';
+say $usage and exit 0 if $ARGV[0] =~ /^(-h|--help)$/;
+
+die "$usage\n" unless @ARGV == 2;
+my ($mame_trace, $megamu_trace) = @ARGV;
+
+my %mame_instr_map;
+my @mame_instr_addrs = uniq(map {
+	if (my ($addr, $instr) = /^([a-f0-9]+): ([^\n\r]+)/i) {
+		$addr = uc $addr;
+		$mame_instr_map{$addr} = $instr;
+		$addr;
+	} else { () }
+} do { open my $fh, '<', $mame_trace; <$fh> });
+
+my %megamu_instr_map;
+my @megamu_instr_addrs = uniq(map {
+	if (my ($addr, $instr) = /^\(pc \$([a-f0-9]+)\) ([^\n\r]+)/i) {
+		$addr = uc $addr;	
+		$megamu_instr_map{$addr} = $instr;
+		$addr;
+	} else { () }
+} do { open my $fh, '<', $megamu_trace; <$fh> });
+
+for (my $i = scalar(@megamu_instr_addrs)-1; $i >= 0; $i--) {
+	my $megamu_addr = $megamu_instr_addrs[$i];
+	if ($mame_instr_map{$megamu_addr}) {
+		say "$megamu_addr: $megamu_instr_map{$megamu_addr}";
+		exit 0;
+	}
+}

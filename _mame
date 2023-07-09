@@ -5,7 +5,8 @@ use warnings;
 use v5.16.3;
 use autodie;
 
-# mame leaves files around in the working dir, how annoying ...
+# mame leaves files around in the working dir, how annoying. This script
+# makes sure where cd'd into mames directory ...
 
 my $exe;
 if ($ARGV[0] eq 'debug') {

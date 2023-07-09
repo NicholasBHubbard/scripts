@@ -8,7 +8,7 @@ use autodie;
 my $arg = $ARGV[0];
 
 unless (@ARGV == 1 && $arg && $arg =~ /^(?:debug|optimize)$/) {
-    die "_mame-compile: expected arg 'debug' or 'optimize'\n";
+    die "_mame-compile: expected one arg 'debug' or 'optimize'\n";
 }
 
 my $compile_cmd = 'make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE';

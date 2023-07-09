@@ -11,7 +11,7 @@ unless ($arg && $arg =~ /^(?:debug|normal)$/) {
     die "expected arg 'debug' or 'normal'\n";
 }
 
-my $compile_cmd = 'make clean; make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE';
+my $compile_cmd = 'make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE';
 $compile_cmd   .= ' OPTIMIZE=0 SYMBOLS=1 SYMLEVEL=3' if $arg eq 'debug';
 
 my $mame_dir = '/home/_73/p/emus/mame';

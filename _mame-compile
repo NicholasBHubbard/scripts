@@ -14,7 +14,7 @@ unless (@ARGV == 1 && $arg && $arg =~ /^(?:debug|optimize)$/) {
 my $compile_cmd = 'make -j4 SOURCES=sega NOWERROR=1 REGENIE=1 ARCHOPTS=-U_FORTIFY_SOURCE';
 $compile_cmd   .= ' OPTIMIZE=0 SYMBOLS=1 SYMLEVEL=3' if $arg eq 'debug';
 
-my $mame_dir = '/home/_73/p/emus/mame';
+my $mame_dir = '/home/_73/p/mame';
 
 chdir $mame_dir;
 

@@ -15,5 +15,5 @@ if ($ARGV[0] eq 'debug') {
 } else {
     $exe = './mame';
 }
-chdir "$ENV{HOME}/p/emus/mame";
+chdir "$ENV{HOME}/p/mame";
 exit system($exe, @ARGV);

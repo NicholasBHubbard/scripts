@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16;
+use autodie;
+
+sub replace_nall_types {
+    my $file = shift;
+    open my $in_fh, '<', $file;
+    open my $out_fh, '>', '/tmp/_ares-nall-replace.tmp';
+    while (<$in_fh>) {
+        s/u64(?![\d])/uint64_t/g;
+        s/u32(?![\d])/uint32_t/g;
+        s/u16(?![\d])/uint16_t/g;
+        s/u8(?![\d])/uint8_t/g;
+
+        s/n64(?![\d])/uint64_t/g;
+        s/n32(?![\d])/uint32_t/g;
+        s/n16(?![\d])/uint16_t/g;
+        s/n8(?![\d])/uint8_t/g;
+        s/n1(?![\d])/bool/g;
+
+        s/i64(?![\d])/int64_t/g;
+        s/i32(?![\d])/int32_t/g;
+        s/i16(?![\d])/int16_t/g;
+        s/i8(?![\d])/int8_t/g;
+
+        s/s64(?![\d])/int64_t/g;
+        s/s32(?![\d])/int32_t/g;
+        s/s16(?![\d])/int16_t/g;
+        s/s8(?![\d])/int8_t/g;
+
+        s/f64(?![\d])/double/g;
+        s/i17(?![\d])/int32_t/g;
+
+        # s/n15(?![\d])/uint16_t/g;
+
+        print $out_fh $_;
+    }
+    close $in_fh;
+    close $out_fh;
+    rename '/tmp/_ares-nall-replace.tmp', $file;
+}
+
+replace_nall_types($_) for @ARGV;

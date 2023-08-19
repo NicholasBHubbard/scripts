@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use autodie;
+
+die "usage: _perlbuild PERL_VERSION\n" unless @ARGV == 1;
+my $perl_dir = "$ENV{HOME}/.local/perls/$ARGV[0]";
+mkdir $perl_dir;
+exit(system "curl -L https://raw.githubusercontent.com/tokuhirom/Perl-Build/master/perl-build | perl - $ARGV[0] $perl_dir");

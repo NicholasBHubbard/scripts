@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+# a dead simple wrapper for invoking fpm
+
+use strict;
+use warnings;
+use autodie;
+
+chdir "$ENV{HOME}/p/fpm";
+exec 'bundle', 'exec', 'bin/fpm', @ARGV;

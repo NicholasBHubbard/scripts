@@ -2,12 +2,12 @@
 
 # just a wrapper for invoking fpm
 
-use autodie;
 my $fpm_dir   = "$ENV{HOME}/p/fpm";
 my $fpm_bin   = "$fpm_dir/bin/fpm";
 my $work_dir  = "$ENV{D}/fpm-work";
 my $files_dir = "$work_dir/files";
 my $build_dir = "$work_dir/build";
+use autodie;
 mkdir $work_dir  unless -d $work_dir;
 mkdir $files_dir unless -d $files_dir;
 mkdir $build_dir unless -d $build_dir;

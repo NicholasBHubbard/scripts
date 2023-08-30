@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# a simple wrapper for invoking fpm
+# just a wrapper for invoking fpm
 
 use autodie;
 my $fpm_dir   = "$ENV{HOME}/p/fpm";

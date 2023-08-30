@@ -1,10 +1,15 @@
 #!/usr/bin/perl
 
-# a dead simple wrapper for invoking fpm
+# a simple wrapper for invoking fpm
 
-use strict;
-use warnings;
 use autodie;
-
-chdir "$ENV{HOME}/p/fpm";
-exec 'bundle', 'exec', 'bin/fpm', @ARGV;
+my $fpm_dir   = "$ENV{HOME}/p/fpm";
+my $fpm_bin   = "$fpm_dir/bin/fpm";
+my $work_dir  = "$ENV{D}/fpm-work";
+my $files_dir = "$work_dir/files";
+my $build_dir = "$work_dir/build";
+mkdir $work_dir  unless -d $work_dir;
+mkdir $files_dir unless -d $files_dir;
+mkdir $build_dir unless -d $build_dir;
+chdir $fpm_dir;
+exec 'bundle', 'exec', $fpm_bin, '--debug-workspace', '--chdir', $files_dir, '--workdir', $build_dir, @ARGV;

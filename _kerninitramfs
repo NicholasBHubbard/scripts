@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use autodie;
+use Cwd 'abs_path';
+
+die '_kerninitramfs: error: must be root', "\n" unless 0 == $>;
+my $link = abs_path('/usr/src/linux/'); # $link = '/usr/src/linux-5.15.117'
+my ($version) = $link =~ /([0-9.]+)$/;
+exec "/usr/share/mkinitrd/mkinitrd_command_generator.sh -k $version | sh ; grub-mkconfig -o /boot/grub/grub.cfg";

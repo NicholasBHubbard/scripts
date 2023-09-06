@@ -5,8 +5,8 @@ use warnings;
 use autodie;
 
 my @man_sections = (1, 2, 3, 4, 5, 8);
-my $rand_section = $man_sections[int rand @man_sections];
-my $mandir = "/usr/man/man$rand_section";
+my $randsection = $man_sections[int rand @man_sections];
+my $mandir = "/usr/man/man$randsection";
 my @mans = map { my ($x) = $_ =~ /^([^.]+)/; $x } do { opendir(my $dh, $mandir); readdir $dh };
-my $man = $mans[int rand @mans];
-exec 'man', $man;
+my $randman = $mans[int rand @mans];
+exec 'man', $randman;

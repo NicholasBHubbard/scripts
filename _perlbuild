@@ -5,7 +5,7 @@ use warnings;
 use autodie;
 use File::Path qw(make_path);
 
-die "usage: _perlbuild PERL_VERSION\n" unless @ARGV == 1 && $_[0] =~ /^[0-9\.]+$/;
+die "usage: _perlbuild PERL_VERSION\n" unless @ARGV == 1 && $ARGV[0] =~ /^[0-9\.]+$/;
 my $perl_dir = "$ENV{HOME}/.local/perls/$ARGV[0]";
 make_path $perl_dir;
 exit(system "curl -L https://raw.githubusercontent.com/tokuhirom/Perl-Build/master/perl-build | perl - $ARGV[0] $perl_dir");

@@ -6,7 +6,7 @@ use autodie;
 
 my @man_sections = (1, 2, 3, 4, 5, 8);
 my $randsection = $man_sections[int rand @man_sections];
-my $mandir = "/usr/man/man$randsection";
+my $mandir = "/usr/share/man/man$randsection";
 my @mans = map { my ($x) = $_ =~ /^([^.]+)/; $x } do { opendir(my $dh, $mandir); readdir $dh };
 my $randman = $mans[int rand @mans];
 exec 'man', $randman;

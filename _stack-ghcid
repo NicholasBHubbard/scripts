@@ -67,7 +67,7 @@ sub main {
 
     chdir $stack_proj;
 
-    exit system(q(ghcid -c 'stack exec -- ghci -isrc -iapp app/Main.hs'));
+    exec(q(ghcid -c 'stack exec -- ghci -isrc -iapp app/Main.hs'));
 }
 
 main();

@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+# List all the Bbash scripts in $PATH
+
+use strict;
+use warnings;
+use Env qw(@PATH);
+
+for my $dir (@PATH) {
+    for my $file (glob "$dir/*") {
+        print $file, "\n" if `file '$file'` =~ /Bourne-Again shell script/;
+    }
+}

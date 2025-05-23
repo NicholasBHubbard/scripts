@@ -9,3 +9,4 @@ trap cleanup_and_exit INT TERM
 diff -r --exclude='*.git' ~/p/ovn-sync/ovn-sync-workspace /tmp/ovn-sync-workspace
 ret=$?
 rm -rf /tmp/ovn-sync-workspace
+exit $ret

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ -d /tmp/ovn-sync-workspace ]; then
-    rm -rf /tmp/ovn-sync-workspace
-fi
-~/p/ovn-sync/ovn_sync.py --keep-workspace --ovn22.03 distgit_sync --no-push
-diff -r --exclude='*.git' ~/p/ovn-sync/ovn-sync-workspace /tmp/ovn-sync-workspace
-exit $?

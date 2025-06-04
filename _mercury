@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+# glob returns sorted
+$mercury = (glob "/usr/local/mercury*")[-1];
+$cmd = shift @ARGV;
+
+if (not $mercury) {
+    die '_mercury: could not find mercury in /usr/local';
+}
+
+if (not $cmd or $cmd =~ /^(-h|--help)$/) {
+    warn 'Usage: _mercury CMD [ARGS..]', "\n";
+    exit not $cmd ? 1 : 0;
+}
+
+$ENV{PATH} = "$mercury/bin:$ENV{PATH}";
+exec "$mercury/bin/$cmd", @ARGV;

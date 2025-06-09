@@ -14,4 +14,6 @@ if (not $cmd or $cmd =~ /^(-h|--help)$/) {
 }
 
 $ENV{PATH} = "$mercury/bin:$ENV{PATH}";
-exec "$mercury/bin/$cmd", @ARGV;
+$ENV{MANPATH} = "$mercury/man:$ENV{MANPATH}";
+$ENV{INFOPATH} = "$mercury/info:$ENV{INFOPATH}";
+exec $cmd, @ARGV;

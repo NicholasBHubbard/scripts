@@ -3,4 +3,3 @@
 # set both right alt and caps-lock to be an extra ctrl key
 
 setxkbmap -option ctrl:nocaps
-setxkbmap -option ctrl:ralt_rctrl

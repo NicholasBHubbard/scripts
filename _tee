@@ -9,5 +9,5 @@ if ! [ -d $tee_dir ]; then
 fi
 
 set -o pipefail
-( $@ ) |& tee "$tee_dir/$tee_name"
+$@ |& tee "$tee_dir/$tee_name"
 exit $?

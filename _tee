@@ -2,7 +2,7 @@
 
 tstamp=$(date "+%Y%m%d-%H%M%S")
 tee_dir=$HOME/cmds
-tee_name=$(echo "$@ $tstamp" | tr / '\\')
+tee_name=$(printf "%q" "$* $tstamp" | tr / '\\')
 
 if ! [ -d $tee_dir ]; then
     mkdir -p $tee_dir

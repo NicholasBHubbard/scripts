@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tstamp=$(date "+%Y%m%d-%H%M%S")
+tstamp=$(date "+%Y_%m_%d_%H:%M:%S")
 tee_dir=$HOME/cmds
 tee_name=$(printf "%q" "$* $tstamp" | tr / '\\')
 

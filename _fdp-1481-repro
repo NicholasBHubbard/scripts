@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# https://issues.redhat.com/browse/FDP-1481
+
+if [[ $EUID -ne 0 ]]; then
+  echo "$0: must run as root"
+  exit 1
+fi
+
+if ! podman ps | grep ovn-central-az1 &>/dev/null; then
+    if ! [ -d /tmp/ovn-fake-multinode ]; then
+        git clone https://github.com/ovn-org/ovn-fake-multinode.git /tmp/ovn-fake-multinode
+    fi
+
+    if ! [ -d /tmp/ovn ]; then
+        git clone https://github.com/ovn-org/ovn.git --branch main --single-branch /tmp/ovn
+        git -C /tmp/ovn submodule update --init
+    fi
+
+    pushd /tmp/ovn-fake-multinode &>/dev/null
+    OVN_SRC_PATH=/tmp/ovn OVS_SRC_PATH=/tmp/ovn/ovs ./ovn_cluster.sh build
+    /usr/share/openvswitch/scripts/ovs-ctl --system-id=testovn-fdp1481 start
+    ./ovn_cluster.sh start
+    popd &>/dev/null
+fi
+
+ip2=$(podman exec ovn-chassis-2 ovs-vsctl get open . external_ids:ovn-encap-ip)
+podman exec ovn-chassis-1 ovs-vsctl set open . external-ids:ovn-encap-ip=$ip2

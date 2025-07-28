@@ -7,6 +7,8 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
+set -e
+
 if ! podman ps | grep ovn-central-az1 &>/dev/null; then
     if ! [ -d /tmp/ovn-fake-multinode ]; then
         git clone https://github.com/ovn-org/ovn-fake-multinode.git /tmp/ovn-fake-multinode

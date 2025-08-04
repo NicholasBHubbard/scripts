@@ -17,5 +17,6 @@ set -x
 podman rmi -f ovn/ovn-multi-node
 podman rmi -f ovn/cinc
 podman system prune --all -f
+rm -rf ovn ovs
 OVN_CFLAGS='-g3 -fno-omit-frame-pointer -fPIC' OVN_SRC_PATH="$OVN_SRC_PATH" OVS_SRC_PATH="$OVS_SRC_PATH" ./ovn_cluster.sh build
 ./ovn_cluster.sh start

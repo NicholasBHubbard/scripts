@@ -9,20 +9,21 @@ fi
 
 set -e
 
+/usr/share/openvswitch/scripts/ovs-ctl --system-id=testovn-fdp1481 restart
+
 if ! podman ps | grep ovn-central-az1 &>/dev/null; then
     if ! [ -d /tmp/ovn-fake-multinode ]; then
-        git clone https://github.com/ovn-org/ovn-fake-multinode.git /tmp/ovn-fake-multinode
+        git clone https://github.com/ovn-org/ovn-fake-multinode.git /tmp/ovn-fake-multinode --single-branch
     fi
 
     if ! [ -d /tmp/ovn ]; then
-        git clone https://github.com/ovn-org/ovn.git --branch main --single-branch /tmp/ovn
+        git clone https://github.com/ovn-org/ovn.git /tmp/ovn --single-branch
         git -C /tmp/ovn submodule update --init
     fi
 
     pushd /tmp/ovn-fake-multinode &>/dev/null
     OVN_SRC_PATH=/tmp/ovn OVS_SRC_PATH=/tmp/ovn/ovs ./ovn_cluster.sh build
-    /usr/share/openvswitch/scripts/ovs-ctl --system-id=testovn-fdp1481 start
-    ./ovn_cluster.sh start
+    sudo ./ovn_cluster.sh start
     popd &>/dev/null
 fi
 

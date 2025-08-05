@@ -3,11 +3,14 @@
 tstamp=$(date "+%Y_%m_%d_%H:%M:%S")
 tee_dir=$HOME/cmds
 tee_name=$(printf "%q" "$* $tstamp" | tr / '\\')
+tee_path=$tee_dir/$tee_name
 
 if ! [[ -d $tee_dir ]]; then
     mkdir -p "$tee_dir"
 fi
 
 set -o pipefail
-eval "$@" |& tee "$tee_dir/$tee_name"
-exit $?
+eval "$@" |& tee "$tee_path"
+ret=$?
+chmod 0444 "$tee_path"
+exit $ret

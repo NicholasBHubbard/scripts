@@ -5,7 +5,7 @@ if [[ $(id -u) != 0 ]]; then
   exit 1
 fi
 
-OVN_SRC_PATH=${OVN_SRC_PATH:-~nhubbard/p/ovn}
+OVN_SRC_PATH=${OVN_SRC_PATH:-~nhubbard/p/ovn-fork}
 OVS_SRC_PATH=${OVS_SRC_PATH:-$OVN_SRC_PATH/ovs}
 OVN_FAKE_MULTINODE_PATH=${OVN_FAKE_MULTINODE_PATH:-~nhubbard/p/ovn-fake-multinode}
 

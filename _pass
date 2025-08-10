@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pass "$1" | head -n1

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [[ $(id -u) != 0 ]]; then
+  echo "$0: must be run by the root user. Exiting." >&2
+  exit 1
+fi
+set -ex
+cd ~_73/p/sbozyp
+perl ./Makefile.PL
+make dist
+VERSION=$(perl bin/sbozyp --version)
+DIST_GZ=App-sbozyp-$VERSION.tar.gz
+mv $DIST_GZ /tmp
+cd /tmp
+tar -xf $DIST_GZ
+DIST=App-sbozyp-$VERSION
+cd /tmp/$DIST
+chmod +x package/sbozyp.SlackBuild
+package/sbozyp.SlackBuild
+upgradepkg --reinstall --install-new /tmp/sbozyp-$VERSION-noarch-1_nbh.tgz
+cd ~_73/p/sbozyp
+rm -rf /tmp/sbozyp*

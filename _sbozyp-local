@@ -1,0 +1,2 @@
+#!/bin/sh
+perl ~_73/p/sbozyp/bin/sbozyp $@

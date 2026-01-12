@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use v5.16;
+
+use Getopt::Long qw(GetOptions :config no_ignore_case no_bundling);
+use Pod::Usage qw(pod2usage);
+
+my $gitlab  = 0;
+my $branch  = 'main';
+my $outdir  = "$ENV{HOME}/Downloads";
+my $help    = 0;
+my $man     = 0;
+
+GetOptions(
+    'gitlab!'   => \$gitlab,
+    'branch=s'  => \$branch,
+    'outdir=s'  => \$outdir,
+    'help|h'    => \$help,
+    'man'       => \$man,
+   ) or pod2usage(2);
+
+pod2usage(1)  if $help;
+pod2usage(-verbose => 2) if $man;
+
+my $repo = shift @ARGV or pod2usage("Missing required argument: REPO\n");
+
+# Basic sanity checks
+if ($branch =~ /\A[ ]+\z/) {
+    die "_wget_git: error: --branch cannot be empty\n";
+}
+if (!-d $outdir) {
+    die "_wget_git: error: output directory does not exist: $outdir\n";
+}
+
+my $url;
+if ($gitlab) {
+    # Expect: namespace/project (GitLab also allows nested groups; support that)
+    # Example: group/subgroup/project
+    my ($namespace, $project) = $repo =~ m{\A(.+)/([^/]+)\z}
+      or die "_wget_git: error: in GitLab mode REPO must be like namespace/project (or group/subgroup/project)\n";
+    # GitLab archive URLs use the project name in the filename.
+    $url = "https://gitlab.com/$namespace/$project/-/archive/$branch/$project-$branch.tar.gz";
+} else {
+    # Expect: owner/repo for GitHub
+    $repo =~ m{\A[^/]+/[^/]+\z}
+      or die "_wget_git: error: in GitHub mode REPO must be like owner/repo\n";
+    $url = "https://github.com/$repo/archive/refs/heads/$branch.tar.gz";
+}
+
+my @cmd = ('wget', '-P', $outdir, $url);
+
+my $status = system(@cmd) >> 8;
+
+if ($status != 0) {
+    die "_wget_git: error: wget exited with non-zero status $status\n";
+}
+
+exit 0;
+
+__END__
+
+=head1 NAME
+
+_wget_git - download a GitHub/GitLab repository branch tarball using wget
+
+=head1 SYNOPSIS
+
+  _wget_git [options] REPO
+
+  # GitHub (default)
+  _wget_git torvalds/linux
+  _wget_git --branch master torvalds/linux
+
+  # GitLab
+  _wget_git --gitlab gitlab-org/gitlab
+  _wget_git --gitlab --branch main group/subgroup/project
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--gitlab>
+
+Treat REPO as a GitLab project path and use gitlab.com archive URLs.
+REPO must be namespace/project or group/subgroup/project.
+
+=item B<--branch>=I<name>
+
+Branch name to download. Default: C<main>
+
+=item B<--outdir>=I<dir>
+
+Directory to save the tarball. Default: C<$HOME/Downloads>
+
+=item B<-h, --help>
+
+Show brief help.
+
+=item B<--man>
+
+Show full documentation.
+
+=back
+
+=head1 ARGUMENTS
+
+=over 4
+
+=item B<REPO>
+
+For GitHub: C<owner/repo>
+For GitLab (with C<--gitlab>): C<namespace/project> (or nested groups)
+
+=back

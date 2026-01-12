@@ -34,8 +34,7 @@ if (!-d $outdir) {
     die "_wget_git: error: output directory does not exist: $outdir\n";
 }
 
-my $url;
-if ($gitlab) {
+my $url; if ($gitlab) {
     # Expect: namespace/project (GitLab also allows nested groups; support that)
     # Example: group/subgroup/project
     my ($namespace, $project) = $repo =~ m{\A(.+)/([^/]+)\z}

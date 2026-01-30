@@ -2,6 +2,6 @@
 
 # Run an arbitrary command in an arbitrary directory
 
-set -e; cd "$1" && shift; set +e
+set -e; cd "$1"; shift; set +e
 $@
 exit $?

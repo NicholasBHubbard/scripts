@@ -27,7 +27,7 @@ fi
 
 # Normal execution forwards the command to debserver.
 remote_command='exec yaesm'
-for argument; do
+for argument in "$@"; do
     remote_command+=" '${argument//\'/\'\\\'\'}'"
 done
 

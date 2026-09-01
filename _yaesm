@@ -1,0 +1,25 @@
+#!/bin/bash
+
+_yaesm_completion()
+{
+    local current=${COMP_WORDS[COMP_CWORD]}
+    local -a words=("${COMP_WORDS[@]:1:COMP_CWORD-1}")
+
+    mapfile -t COMPREPLY < <(
+        command _yaesm __complete "--current=$current" -- "${words[@]}"
+    )
+}
+
+# Bash-completion sources this file.
+if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
+    complete -F _yaesm_completion _yaesm
+    return
+fi
+
+# Normal execution forwards the command to debserver.
+remote_command='exec yaesm'
+for argument; do
+    remote_command+=" '${argument//\'/\'\\\'\'}'"
+done
+
+exec ssh -T debserver "$remote_command"

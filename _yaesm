@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_yaesm_completion()
+__complete_remote_yaesm()
 {
     local current=${COMP_WORDS[COMP_CWORD]}
     local -a words=("${COMP_WORDS[@]:1:COMP_CWORD-1}")
@@ -12,7 +12,7 @@ _yaesm_completion()
 
 # Bash-completion sources this file.
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
-    complete -F _yaesm_completion _yaesm
+    complete -F __complete_remote_yaesm _yaesm
     return
 fi
 
